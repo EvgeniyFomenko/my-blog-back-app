@@ -15,11 +15,27 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public List<Comment> findAllByPostId(Long postId) {
         return jdbcTemplate.query(
-                "select id, text from comment where post_id = ?",
+                "select id, text, post_id from comment where post_id = ?",
                 (rs, rowNum) -> new Comment(
                         rs.getLong("id"),
-                        rs.getString("text")
+                        rs.getString("text"),
+                        rs.getLong("post_id")
                 ),postId);
+    }
+
+    @Override
+    public Comment findCommentByIdAndPostId(Long commentId,Long postId) {
+        List<Comment> comments = jdbcTemplate.query(
+                "select id, text, post_id from comment where post_id = ? and id = ?",
+                (rs, rowNum) -> new Comment(
+                        rs.getLong("id"),
+                        rs.getString("text"),
+                        rs.getLong("post_id")
+                ),postId, commentId);
+        if(comments.size()>0){
+            return comments.get(0);
+        }
+        throw new RuntimeException("Коментария с id " + commentId + " несуществует");
     }
 
     @Override

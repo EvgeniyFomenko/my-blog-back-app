@@ -9,6 +9,6 @@ create table if not exists post(
 
 create table if not exists comment(
                                    id bigserial primary key,
-                                   title varchar(256) not null,
+                                   text varchar(256) not null,
                                    post_id integer not null);
 

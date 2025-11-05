@@ -9,6 +9,8 @@ public interface CommentRepository {
 
     void saveByPostId(Comment comment, Long postId);
 
+    Comment findCommentByIdAndPostId(Long commentId,Long postId);
+
     void deleteById(Long id);
 
     void update(Long id, Comment post);

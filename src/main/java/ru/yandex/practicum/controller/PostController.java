@@ -51,4 +51,12 @@ public class PostController {
     public void deletePost(@PathVariable("id") Long id) {
         postService.deleteById(id);
     }
+
+    @PostMapping("/{id}/likes")
+    public int likePost(@PathVariable("id") Long id) {
+       Post post = postService.finById(id);
+       post.setLikesCount(post.getLikesCount()+1);
+       postService.save(post);
+       return post.getLikesCount();
+    }
 }
