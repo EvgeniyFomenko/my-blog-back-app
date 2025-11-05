@@ -38,6 +38,6 @@ public class PostMapper {
     }
 
     static public PostResponseDto toResponseDto(List<Post> post) {
-        return PostResponseDto.builder().posts(post.stream().map(PostMapper::toDto).toList()).hasPrev(false).hasNext(true).lastPage(1).build();
+        return PostResponseDto.builder().posts(post.stream().map(PostMapper::toDto).toList()).hasPrev(false).hasNext(false).lastPage(1).build();
     }
 }

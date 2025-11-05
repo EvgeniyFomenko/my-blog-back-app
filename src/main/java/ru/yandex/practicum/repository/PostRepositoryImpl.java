@@ -21,8 +21,6 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findAll() {
-        // Выполняем запрос с помощью JdbcTemplate
-        // Преобразовываем ответ с помощью RowMapper
         return jdbcTemplate.query(
                 "select id, title, text,tags, likes_count, comments_count from post",
                 (rs, rowNum) -> new Post(
@@ -33,6 +31,21 @@ public class PostRepositoryImpl implements PostRepository {
                         rs.getInt("likes_count"),
                         rs.getInt("comments_count")
                 ));
+    }
+
+    @Override
+    public List<Post> findByText(String text) {
+        return jdbcTemplate.query(
+                "select id, title, text,tags, likes_count, comments_count from post where text like ?",
+                (rs, rowNum) -> new Post(
+                        rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getString("text"),
+                        rs.getString("tags"),
+                        rs.getInt("likes_count"),
+                        rs.getInt("comments_count")
+                ), "%"+text+"%");
+
     }
 
     @Override

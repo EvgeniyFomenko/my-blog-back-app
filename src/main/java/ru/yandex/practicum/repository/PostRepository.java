@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PostRepository {
     List<Post> findAll();
-
+    List<Post> findByText(String text);
     void save(Post post) throws SQLException;
 
     void deleteById(Long id);
