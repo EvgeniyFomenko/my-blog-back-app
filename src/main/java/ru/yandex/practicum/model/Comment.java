@@ -9,5 +9,4 @@ public class Comment {
     private Long id;
     private String text;
     private Long postId;
-//    private Post post;
 }

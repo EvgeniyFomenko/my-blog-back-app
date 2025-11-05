@@ -20,7 +20,7 @@ public class PostController {
 
     @GetMapping
     public PostResponseDto getPosts(@RequestParam("search") String search, @RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize) {
-        System.out.println("Search: " + search + ", pageNumber: " + pageNumber + ", pageSize: " + pageSize);
+        System.out.println("Search: " + search + ", pageNumber: " + pageNumber + ", pageSize: " + pageSize);//todo Добавить пагинацию
         return PostMapper.toResponseDto(postService.findAll());
     }
 
@@ -33,17 +33,16 @@ public class PostController {
 
     @PostMapping
     public PostDto savePost(@RequestBody PostDto post) {
-        Post postEntity = new Post();
-        postEntity.setText(post.getText());
-        postEntity.setTitle(post.getTitle());
-        String tags = "";
-        if (Objects.nonNull(post.getTags())) {
-            tags = String.join(" ", post
-                    .getTags());
-        }
-        postEntity.setTags(tags);
+        Post postEntity  = PostMapper.toEntity(post);
         System.out.println(postEntity.toString());
         postService.save(postEntity);
+        return PostMapper.toDto(postEntity);
+    }
+
+    @PutMapping("/{id}")
+    public PostDto updatePost(@RequestBody PostDto post,  @PathVariable("id") Long id) {
+        Post postEntity = PostMapper.toEntity(post);
+        postService.update(id,postEntity);
         return PostMapper.toDto(postEntity);
     }
 

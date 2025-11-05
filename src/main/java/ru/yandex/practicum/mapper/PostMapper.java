@@ -28,8 +28,13 @@ public class PostMapper {
     }
 
     static public Post toEntity(PostDto postDto) {
+        String tags = "";
+        if (Objects.nonNull(postDto.getTags())) {
+            tags = String.join(" ", postDto
+                    .getTags());
+        }
         return Post.builder().id(postDto.getId()).title(postDto.getTitle())
-                .text(postDto.getText()).commentsCount(postDto.getCommentsCount()).likesCount(postDto.getLikesCount()).build();
+                .text(postDto.getText()).commentsCount(postDto.getCommentsCount()).likesCount(postDto.getLikesCount()).tags(tags).build();
     }
 
     static public PostResponseDto toResponseDto(List<Post> post) {
