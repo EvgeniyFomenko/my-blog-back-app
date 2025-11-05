@@ -56,7 +56,7 @@ public class PostController {
     public int likePost(@PathVariable("id") Long id) {
        Post post = postService.finById(id);
        post.setLikesCount(post.getLikesCount()+1);
-       postService.save(post);
+       postService.update(id,post);
        return post.getLikesCount();
     }
 }

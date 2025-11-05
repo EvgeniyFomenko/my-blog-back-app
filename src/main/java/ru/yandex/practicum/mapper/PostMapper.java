@@ -19,6 +19,7 @@ public class PostMapper {
 
         return PostDto.builder()
                 .commentsCount(post.getCommentsCount())
+                .likesCount(post.getLikesCount())
                 .tags(tags)
                 .title(post.getTitle())
                 .text(post.getText())
@@ -28,7 +29,7 @@ public class PostMapper {
 
     static public Post toEntity(PostDto postDto) {
         return Post.builder().id(postDto.getId()).title(postDto.getTitle())
-                .text(postDto.getText()).build();
+                .text(postDto.getText()).commentsCount(postDto.getCommentsCount()).likesCount(postDto.getLikesCount()).build();
     }
 
     static public PostResponseDto toResponseDto(List<Post> post) {
