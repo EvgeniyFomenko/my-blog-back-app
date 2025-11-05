@@ -4,13 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.PostDto;
 import ru.yandex.practicum.dto.PostResponseDto;
-import ru.yandex.practicum.dto.TagDto;
 import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.service.PostService;
-
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -20,29 +16,27 @@ public class PostController {
 
     @GetMapping
     public PostResponseDto getPosts(@RequestParam("search") String search, @RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize) {
-        System.out.println("Search: " + search + ", pageNumber: " + pageNumber + ", pageSize: " + pageSize);//todo Добавить пагинацию
-        return PostMapper.toResponseDto(postService.findAll());
+        return postService.findByText(search, pageSize, pageNumber);
     }
 
     @GetMapping("/{id}")
     public PostDto getPostById(@PathVariable("id") Long id) {
         Post post = postService.finById(id);
-        System.out.println("Post: " + post.toString());
         return PostMapper.toDto(postService.finById(id));
     }
 
     @PostMapping
     public PostDto savePost(@RequestBody PostDto post) {
-        Post postEntity  = PostMapper.toEntity(post);
+        Post postEntity = PostMapper.toEntity(post);
         System.out.println(postEntity.toString());
         postService.save(postEntity);
         return PostMapper.toDto(postEntity);
     }
 
     @PutMapping("/{id}")
-    public PostDto updatePost(@RequestBody PostDto post,  @PathVariable("id") Long id) {
+    public PostDto updatePost(@RequestBody PostDto post, @PathVariable("id") Long id) {
         Post postEntity = PostMapper.toEntity(post);
-        postService.update(id,postEntity);
+        postService.update(id, postEntity);
         return PostMapper.toDto(postEntity);
     }
 
@@ -53,9 +47,9 @@ public class PostController {
 
     @PostMapping("/{id}/likes")
     public int likePost(@PathVariable("id") Long id) {
-       Post post = postService.finById(id);
-       post.setLikesCount(post.getLikesCount()+1);
-       postService.update(id,post);
-       return post.getLikesCount();
+        Post post = postService.finById(id);
+        post.setLikesCount(post.getLikesCount() + 1);
+        postService.update(id, post);
+        return post.getLikesCount();
     }
 }
