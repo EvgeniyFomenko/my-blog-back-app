@@ -74,9 +74,6 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             }
         }
-//        // Формируем insert-запрос с параметрами
-//        jdbcTemplate.update(,
-//               post.getId(), post.getTitle(), post.getText(),post.getTags(), post.getLikesCount(), post.getCommentsCount());
     }
 
     @Override
