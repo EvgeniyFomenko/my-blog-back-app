@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Image;
 import ru.yandex.practicum.repository.ImageRepository;
 
@@ -25,7 +26,7 @@ public class ImageService {
         Image image;
         List<Image> imageList =  imageRepository.findAllByPostId(id);
         if(imageList.isEmpty()){
-            throw new RuntimeException("Изображение не найдено или отсутсвует");
+            throw new NotFoundException("Изображение не найдено или отсутсвует");
         }
         image = imageList.get(0);
         return filesService.download(image.getName());

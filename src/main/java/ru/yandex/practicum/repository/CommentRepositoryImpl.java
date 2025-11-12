@@ -3,6 +3,7 @@ package ru.yandex.practicum.repository;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Comment;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         if(comments.size()>0){
             return comments.get(0);
         }
-        throw new RuntimeException("Коментария с id " + commentId + " несуществует");
+        throw new NotFoundException("Коментария с id " + commentId + " несуществует");
     }
 
     @Override
