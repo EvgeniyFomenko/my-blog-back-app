@@ -9,6 +9,7 @@ import ru.yandex.practicum.model.Image;
 import ru.yandex.practicum.repository.ImageRepository;
 
 import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class ImageService {
@@ -18,14 +19,14 @@ public class ImageService {
     public String uploadImage(MultipartFile file, long id) {
         String fileName = filesService.upload(file);
         imageRepository.deleteByPostId(id);
-        imageRepository.saveByPostId(new Image(null,fileName,id),id);
+        imageRepository.saveByPostId(new Image(null, fileName, id), id);
         return fileName;
     }
 
     public Resource downloadImage(Long id) {
         Image image;
-        List<Image> imageList =  imageRepository.findAllByPostId(id);
-        if(imageList.isEmpty()){
+        List<Image> imageList = imageRepository.findAllByPostId(id);
+        if (imageList.isEmpty()) {
             throw new NotFoundException("Изображение не найдено или отсутсвует");
         }
         image = imageList.get(0);

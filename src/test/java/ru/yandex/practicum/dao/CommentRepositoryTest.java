@@ -10,9 +10,7 @@ import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.CommentRepository;
-import ru.yandex.practicum.repository.CommentRepositoryImpl;
 import ru.yandex.practicum.repository.PostRepository;
-import ru.yandex.practicum.repository.PostRepositoryImpl;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,9 +32,9 @@ public class CommentRepositoryTest {
     @Test
     void findAllByPostId() throws SQLException {
         Comment comment = new Comment(1L, "comment", 1L);
-        Post post = new Post(1L,"title","text","tag tag1", 0,0);
+        Post post = new Post(1L, "title", "text", "tag tag1", 0, 0);
         postRepository.save(post);
-        commentRepository.saveByPostId(comment,1L);
+        commentRepository.saveByPostId(comment, 1L);
         List<Comment> commentFind = commentRepository.findAllByPostId(1L);
         assertEquals(1, commentFind.size());
     }
@@ -44,9 +42,9 @@ public class CommentRepositoryTest {
     @Test
     void findCommentByIdAndPostId() throws SQLException {
         Comment comment = new Comment(1L, "comment", 1L);
-        Post post = new Post(1L,"title","text","tag tag1", 0,0);
+        Post post = new Post(1L, "title", "text", "tag tag1", 0, 0);
         postRepository.save(post);
-        commentRepository.saveByPostId(comment,1L);
+        commentRepository.saveByPostId(comment, 1L);
         Comment commentFind = commentRepository.findCommentByIdAndPostId(1L, 1L);
         assertEquals(comment, commentFind);
     }
@@ -54,9 +52,9 @@ public class CommentRepositoryTest {
     @Test
     void save() throws SQLException {
         Comment comment = new Comment(1L, "comment", 1L);
-        Post post = new Post(1L,"title","text","tag tag1", 0,0);
+        Post post = new Post(1L, "title", "text", "tag tag1", 0, 0);
         postRepository.save(post);
-        commentRepository.saveByPostId(comment,1L);
+        commentRepository.saveByPostId(comment, 1L);
         Comment commentFind = commentRepository.findCommentByIdAndPostId(1L, 1L);
         assertEquals(comment, commentFind);
     }
@@ -64,13 +62,12 @@ public class CommentRepositoryTest {
     @Test
     void delete() throws SQLException {
         Comment comment = new Comment(1L, "comment", 1L);
-        Post post = new Post(1L,"title","text","tag tag1", 0,0);
+        Post post = new Post(1L, "title", "text", "tag tag1", 0, 0);
         postRepository.save(post);
-        commentRepository.saveByPostId(comment,1L);
+        commentRepository.saveByPostId(comment, 1L);
         commentRepository.deleteById(1L);
-        assertThrows(NotFoundException.class,()->commentRepository.findCommentByIdAndPostId(1L, 1L));
+        assertThrows(NotFoundException.class, () -> commentRepository.findCommentByIdAndPostId(1L, 1L));
     }
-
 
 
 }

@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import ru.yandex.practicum.configuration.DaoConfigurationTest;
-import ru.yandex.practicum.configuration.ServiceConfigurationTest;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.PostRepository;
-import ru.yandex.practicum.repository.PostRepositoryImpl;
 
 import java.sql.SQLException;
 import java.util.List;

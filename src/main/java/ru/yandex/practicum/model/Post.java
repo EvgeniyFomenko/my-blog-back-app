@@ -16,5 +16,4 @@ public class Post {
     private String tags;
     private int likesCount;
     private int commentsCount;
-//    private List<Comment> comment;
 }

@@ -45,7 +45,7 @@ public class PostRepositoryImpl implements PostRepository {
                         rs.getString("tags"),
                         rs.getInt("likes_count"),
                         rs.getInt("comments_count")
-                ), "%"+text+"%");
+                ), "%" + text + "%");
 
     }
 
@@ -60,20 +60,20 @@ public class PostRepositoryImpl implements PostRepository {
                 rs.getInt("comments_count")
         ), id);
 
-        if ( posts.size()>1) {
+        if (posts.size() > 1) {
             throw new RuntimeException("Вернулось записей больше 1");
         }
 
         if (posts.isEmpty()) {
             throw new NotFoundException("Записи с id " + id + " не существует");
         }
-        return  posts.get(0);
+        return posts.get(0);
     }
 
     @Override
     public void save(Post post) throws SQLException {
         String query = "insert into post(title, text, tags, likes_count, comments_count) values(?, ?,?, ?, ?)";
-        try(PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, post.getTitle());
             preparedStatement.setString(2, post.getText());

@@ -3,10 +3,10 @@ package ru.yandex.practicum.repository;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.model.Image;
 
 import java.util.List;
+
 @Repository
 @AllArgsConstructor
 public class ImageRepositoryImpl implements ImageRepository {
@@ -20,7 +20,7 @@ public class ImageRepositoryImpl implements ImageRepository {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getLong("post_id")
-                ),postId);
+                ), postId);
     }
 
     @Override

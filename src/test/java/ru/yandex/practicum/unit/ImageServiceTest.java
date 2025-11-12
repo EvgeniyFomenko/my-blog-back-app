@@ -18,9 +18,10 @@ import ru.yandex.practicum.service.ImageService;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class} )
+@SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class})
 class ImageServiceTest {
     @Autowired
     @Qualifier("mockImageRepository")
@@ -40,7 +41,7 @@ class ImageServiceTest {
         Mockito.doReturn(file).when(filesServiceImpl).upload(multipartFile);
         Mockito.doNothing().when(mockImageRepository).saveByPostId(image, 1L);
         Mockito.doNothing().when(mockImageRepository).deleteByPostId(1L);
-        String fileReturn = imageService.uploadImage(multipartFile,1L);
+        String fileReturn = imageService.uploadImage(multipartFile, 1L);
         Mockito.verify(mockImageRepository, Mockito.atLeastOnce()).saveByPostId(bySaved, 1L);
         Mockito.verify(mockImageRepository, Mockito.atLeastOnce()).deleteByPostId(1L);
         assertEquals(file, fileReturn);

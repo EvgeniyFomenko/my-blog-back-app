@@ -16,27 +16,24 @@ import ru.yandex.practicum.configuration.IntegrationConfigurationTest;
 import ru.yandex.practicum.controller.ImageController;
 import ru.yandex.practicum.dto.PostDto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(classes = {IntegrationConfigurationTest.class, DaoConfigurationTest.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
 public class ImageControllerTest {
-    @Autowired
-    private ImageController imageController;
 
     private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext wac;
     private final ObjectMapper mapper = new ObjectMapper();
+
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
+
     @Test
     public void uploadImageTest() throws Exception {
         PostDto postDto = PostDto.builder().id(1L).title("title").text("text").commentsCount(0).likesCount(0).build();
@@ -48,10 +45,11 @@ public class ImageControllerTest {
 
         byte[] pngStub = new byte[]{(byte) 137, 80, 78, 71};
         MockMultipartFile file = new MockMultipartFile("image", "avatar.png", "image/png", pngStub);
-//        String name = imageController.uploadFile(multipartFile, 1L);
-//        assertEquals("file", name);
         mockMvc.perform(multipart("/posts/{id}/image", 1L).file(file)
-                        .with(request -> {request.setMethod("PUT"); return request;}))
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        }))
                 .andExpect(status().isOk());
     }
 
@@ -69,7 +67,10 @@ public class ImageControllerTest {
 //        String name = imageController.uploadFile(multipartFile, 1L);
 //        assertEquals("file", name);
         mockMvc.perform(multipart("/posts/{id}/image", 1L).file(file)
-                        .with(request -> {request.setMethod("PUT"); return request;}))
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        }))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/posts/{id}/image", 1L)).andExpect(status().isOk())

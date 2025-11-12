@@ -2,7 +2,6 @@ package ru.yandex.practicum.mapper;
 
 import ru.yandex.practicum.dto.PostDto;
 import ru.yandex.practicum.dto.PostResponseDto;
-import ru.yandex.practicum.dto.TagDto;
 import ru.yandex.practicum.model.Post;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class PostMapper {
     static public PostDto toDto(Post post) {
         List<String> tags = new ArrayList<>();
         if (Objects.nonNull(post.getTags())) {
-           tags = Arrays.stream(post.getTags().split("\s")).toList();
+            tags = Arrays.stream(post.getTags().split(" ")).toList();
         }
 
         return PostDto.builder()

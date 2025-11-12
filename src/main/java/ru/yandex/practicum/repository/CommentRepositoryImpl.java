@@ -7,6 +7,7 @@ import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Comment;
 
 import java.util.List;
+
 @AllArgsConstructor
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
@@ -21,19 +22,19 @@ public class CommentRepositoryImpl implements CommentRepository {
                         rs.getLong("id"),
                         rs.getString("text"),
                         rs.getLong("post_id")
-                ),postId);
+                ), postId);
     }
 
     @Override
-    public Comment findCommentByIdAndPostId(Long commentId,Long postId) {
+    public Comment findCommentByIdAndPostId(Long commentId, Long postId) {
         List<Comment> comments = jdbcTemplate.query(
                 "select id, text, post_id from comment where post_id = ? and id = ?",
                 (rs, rowNum) -> new Comment(
                         rs.getLong("id"),
                         rs.getString("text"),
                         rs.getLong("post_id")
-                ),postId, commentId);
-        if(comments.size()>0){
+                ), postId, commentId);
+        if (comments.size() > 0) {
             return comments.get(0);
         }
         throw new NotFoundException("Коментария с id " + commentId + " несуществует");
@@ -42,7 +43,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void saveByPostId(Comment comment, Long postId) {
         jdbcTemplate.update("insert into comment( text, post_id) values(?, ?)",
-               comment.getText(), postId);
+                comment.getText(), postId);
     }
 
     @Override

@@ -2,10 +2,14 @@ package ru.yandex.practicum.configuration;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.*;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import ru.yandex.practicum.repository.*;
-import ru.yandex.practicum.service.*;
+import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.service.FilesService;
+import ru.yandex.practicum.service.ImageService;
+import ru.yandex.practicum.service.PostService;
 
 @Configuration
 @ComponentScan("ru.yandex.practicum")
@@ -27,17 +31,17 @@ public class ServiceConfigurationTest {
     }
 
     @Bean("mockCommentService")
-    public CommentService commentService(@Qualifier("mockCommentRepository")CommentRepository commentRepository, @Qualifier("mockPostService") PostService postService) {
+    public CommentService commentService(@Qualifier("mockCommentRepository") CommentRepository commentRepository, @Qualifier("mockPostService") PostService postService) {
         return new CommentService(commentRepository, postService);
     }
 
     @Bean("mockPostService")
-    public PostService postService(@Qualifier("mockPostRepository")PostRepository postRepository) {
+    public PostService postService(@Qualifier("mockPostRepository") PostRepository postRepository) {
         return new PostService(postRepository);
     }
 
     @Bean("mockImageService")
-    public ImageService imageService(@Qualifier("mockImageRepository")ImageRepository imageRepository, FilesService filesService) {
+    public ImageService imageService(@Qualifier("mockImageRepository") ImageRepository imageRepository, FilesService filesService) {
         return new ImageService(filesService, imageRepository);
     }
 

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.CommentDto;
 import ru.yandex.practicum.model.Comment;
-import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.service.CommentService;
 import ru.yandex.practicum.service.PostService;
 
@@ -15,7 +14,7 @@ import java.util.List;
 @RequestMapping("/posts")
 public class CommentController {
     private final CommentService commentService;
-    private final PostService postService;
+
     @GetMapping("/{id}/comments")
     public List<Comment> getComments(@PathVariable("id") Long id) {
         return commentService.findAllByPostId(id);
@@ -29,7 +28,7 @@ public class CommentController {
     @PostMapping("/{id}/comments")
     public CommentDto saveComment(@RequestBody CommentDto comment, @PathVariable("id") Long id) {
         commentService.saveAndIncrementCountPostComments(new Comment(null, comment.getText(), id), id);
-        return new CommentDto(comment.getText(),id);
+        return new CommentDto(comment.getText(), id);
     }
 
     @DeleteMapping("/{id}/comments/{idComment}")

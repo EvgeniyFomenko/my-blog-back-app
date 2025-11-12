@@ -18,8 +18,8 @@ public class CommentService {
         return commentRepository.findAllByPostId(id);
     }
 
-    public Comment findCommentByIdAndPostId(Long commentId,Long postId) {
-        return commentRepository.findCommentByIdAndPostId(commentId,postId);
+    public Comment findCommentByIdAndPostId(Long commentId, Long postId) {
+        return commentRepository.findCommentByIdAndPostId(commentId, postId);
     }
 
     public void save(Comment comment, Long postId) {
@@ -32,12 +32,12 @@ public class CommentService {
 
     public void saveAndIncrementCountPostComments(Comment comment, Long postId) {
         commentRepository.saveByPostId(comment, postId);
-        incrementCommentsCountPost(postId,1);
+        incrementCommentsCountPost(postId, 1);
     }
 
     public void deleteAndDecrementCountPostComments(Long commentId, Long postId) {
         delete(commentId);
-        incrementCommentsCountPost(postId,-1);
+        incrementCommentsCountPost(postId, -1);
     }
 
     private void incrementCommentsCountPost(Long postId, int col) {

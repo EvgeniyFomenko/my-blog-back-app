@@ -15,14 +15,11 @@ import ru.yandex.practicum.controller.PostController;
 import ru.yandex.practicum.dto.CommentDto;
 import ru.yandex.practicum.dto.PostDto;
 
-import static org.mockito.Mockito.reset;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringJUnitWebConfig(classes = {IntegrationConfigurationTest.class} )
+@SpringJUnitWebConfig(classes = {IntegrationConfigurationTest.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
 public class PostControllerTest {
     @Autowired
@@ -49,7 +46,7 @@ public class PostControllerTest {
         mockMvc.perform(get("/posts?search=&pageNumber=1&pageSize=5"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.posts",hasSize(2)))
+                .andExpect(jsonPath("$.posts", hasSize(2)))
                 .andExpect(jsonPath("$.posts[0].title").value("title"))
                 .andExpect(jsonPath("$.posts[0].id").value(1));
 

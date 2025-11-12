@@ -10,9 +10,7 @@ import ru.yandex.practicum.configuration.ServiceConfigurationTest;
 import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.CommentRepository;
-import ru.yandex.practicum.repository.CommentRepositoryImpl;
 import ru.yandex.practicum.repository.PostRepository;
-import ru.yandex.practicum.repository.PostRepositoryImpl;
 import ru.yandex.practicum.service.CommentService;
 
 import java.util.List;
@@ -38,10 +36,6 @@ class CommentServiceTest {
         reset(commentRepository);
     }
 
-//    @AfterEach
-//    void tearDown() {
-//    }
-
     @Test
     void findAllByPostId() {
         Comment comment = new Comment(1L, "comment", 1L);
@@ -53,7 +47,7 @@ class CommentServiceTest {
     @Test
     void findCommentByIdAndPostId() {
         Comment comment = new Comment(1L, "comment", 1L);
-        Mockito.doReturn(comment).when(commentRepository).findCommentByIdAndPostId(1l, 1L);
+        Mockito.doReturn(comment).when(commentRepository).findCommentByIdAndPostId(1L, 1L);
         Comment commentFind = commentService.findCommentByIdAndPostId(1L, 1L);
         assertEquals(comment, commentFind);
     }

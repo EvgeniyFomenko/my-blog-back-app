@@ -17,7 +17,7 @@ public class ImageController {
 
     @PutMapping("/{id}/image")
     public String uploadFile(@RequestParam("image") MultipartFile file, @PathVariable("id") Long id) {
-            return imageService.uploadImage(file, id);
+        return imageService.uploadImage(file, id);
     }
 
     @GetMapping("/{id}/image")

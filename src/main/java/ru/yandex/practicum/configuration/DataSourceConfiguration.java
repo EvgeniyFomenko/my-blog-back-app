@@ -16,16 +16,14 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfiguration {
 
-    // Настройка DataSource — компонент, отвечающий за соединение с базой данных
     @Bean
     public DataSource dataSource(
-            // Настройки соединения возьмём из Environment
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String username,
             @Value("${spring.datasource.password}") String password
     ) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org."+url.split(":")[1]+".Driver");
+        dataSource.setDriverClassName("org." + url.split(":")[1] + ".Driver");
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
@@ -33,13 +31,11 @@ public class DataSourceConfiguration {
         return dataSource;
     }
 
-    // JdbcTemplate — компонент для выполнения запросов
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
-    // После инициализации контекста выполняем наполнение схемы базы данных
     @EventListener
     public void populate(ContextRefreshedEvent event) {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);

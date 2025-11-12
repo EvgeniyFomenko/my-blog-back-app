@@ -15,7 +15,7 @@
                 </configuration>
             </plugin>
         </plugins>
-            <finalName>api</finalName>
+        <finalName>api</finalName>
 
     </build>
     <version>1.0</version>

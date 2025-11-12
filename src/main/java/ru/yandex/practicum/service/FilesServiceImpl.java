@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 @Service
 public class FilesServiceImpl implements FilesService {
     public static final String UPLOAD_DIR = "uploads/";
+
     @Override
     public String upload(MultipartFile file) {
         try {
@@ -31,6 +32,7 @@ public class FilesServiceImpl implements FilesService {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
     @Override
     public Resource download(String nameFile) {
         try {
