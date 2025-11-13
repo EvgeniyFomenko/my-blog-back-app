@@ -3,8 +3,8 @@ package ru.yandex.practicum.configuration;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import ru.yandex.practicum.repository.*;
 import ru.yandex.practicum.service.CommentService;
 import ru.yandex.practicum.service.FilesService;
@@ -12,7 +12,8 @@ import ru.yandex.practicum.service.ImageService;
 import ru.yandex.practicum.service.PostService;
 
 @Configuration
-@ComponentScan("ru.yandex.practicum")
+//@ComponentScan("ru.yandex.practicum")
+@Profile("test")
 public class ServiceConfigurationTest {
 
     @Bean("mockCommentRepository")
@@ -40,10 +41,13 @@ public class ServiceConfigurationTest {
         return new PostService(postRepository);
     }
 
+    @Bean
+    public FilesService filesService() {
+        return Mockito.mock(FilesService.class);
+    }
+
     @Bean("mockImageService")
     public ImageService imageService(@Qualifier("mockImageRepository") ImageRepository imageRepository, FilesService filesService) {
         return new ImageService(filesService, imageRepository);
     }
-
-
 }

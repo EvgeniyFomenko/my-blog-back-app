@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import ru.yandex.practicum.configuration.ServiceConfigurationTest;
 import ru.yandex.practicum.model.Comment;
@@ -18,6 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.reset;
 
+@ActiveProfiles("test")
 @SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class})
 class CommentServiceTest {
     @Autowired
@@ -83,7 +85,7 @@ class CommentServiceTest {
         Mockito.doReturn(post).when(postRepository).findById(1L);
         Mockito.doNothing().when(commentRepository).deleteById(1L);
         commentService.deleteAndDecrementCountPostComments(1L, 1L);
-        Mockito.verify(postRepository, Mockito.times(1)).findById(1L);
+        Mockito.verify(postRepository, Mockito.times(2)).findById(1L);
         Mockito.verify(commentRepository, Mockito.times(1)).deleteById(1L);
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import ru.yandex.practicum.configuration.ServiceConfigurationTest;
 import ru.yandex.practicum.dto.PostDto;
@@ -14,13 +15,13 @@ import ru.yandex.practicum.repository.PostRepository;
 import ru.yandex.practicum.service.PostService;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.reset;
 
+@ActiveProfiles("test")
 @SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class})
 class PostServiceTest {
     @Autowired
