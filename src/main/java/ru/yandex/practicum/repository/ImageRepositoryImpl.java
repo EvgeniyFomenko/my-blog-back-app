@@ -25,7 +25,6 @@ public class ImageRepositoryImpl implements ImageRepository {
 
     @Override
     public void saveByPostId(Image image, Long postId) {
-        System.out.println("save image by post id " + postId + " " + image.getName());
         jdbcTemplate.update("insert into image( name, post_id) values(?, ?)",
                 image.getName(), postId);
     }
