@@ -21,14 +21,12 @@ public class PostController {
 
     @GetMapping("/{id}")
     public PostDto getPostById(@PathVariable("id") Long id) {
-        Post post = postService.finById(id);
         return PostMapper.toDto(postService.finById(id));
     }
 
     @PostMapping
     public PostDto savePost(@RequestBody PostDto post) {
         Post postEntity = PostMapper.toEntity(post);
-        System.out.println(postEntity.toString());
         postService.save(postEntity);
         return PostMapper.toDto(postEntity);
     }

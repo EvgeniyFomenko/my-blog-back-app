@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.yandex.practicum.exception.ServerErrorException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +19,7 @@ public class FilesServiceImpl implements FilesService {
     public static final String UPLOAD_DIR = "uploads/";
 
     @Override
+    @Transactional
     public String upload(MultipartFile file) {
         try {
             Path uploadDir = Paths.get(UPLOAD_DIR);
@@ -29,7 +32,7 @@ public class FilesServiceImpl implements FilesService {
             file.transferTo(filePath);
             return file.getOriginalFilename();
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new ServerErrorException(e.getMessage());
         }
     }
 
@@ -41,7 +44,7 @@ public class FilesServiceImpl implements FilesService {
 
             return new ByteArrayResource(content);
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new ServerErrorException(e.getMessage());
         }
     }
 

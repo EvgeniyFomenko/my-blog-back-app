@@ -2,6 +2,7 @@ package ru.yandex.practicum.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.CommentRepository;
@@ -34,7 +35,7 @@ public class CommentService {
         commentRepository.saveByPostId(comment, postId);
         incrementCommentsCountPost(postId, 1);
     }
-
+    @Transactional
     public void deleteAndDecrementCountPostComments(Long commentId, Long postId) {
         delete(commentId);
         incrementCommentsCountPost(postId, -1);

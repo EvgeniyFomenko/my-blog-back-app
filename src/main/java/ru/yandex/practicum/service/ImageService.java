@@ -3,6 +3,7 @@ package ru.yandex.practicum.service;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Image;
@@ -13,9 +14,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ImageService {
-    FilesService filesService;
-    ImageRepository imageRepository;
-
+    private final FilesService filesService;
+    private final ImageRepository imageRepository;
+    @Transactional
     public String uploadImage(MultipartFile file, long id) {
         String fileName = filesService.upload(file);
         imageRepository.deleteByPostId(id);
