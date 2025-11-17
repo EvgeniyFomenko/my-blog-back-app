@@ -2,6 +2,7 @@ package ru.yandex.practicum.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dto.PostResponseDto;
+import ru.yandex.practicum.exception.ServerErrorException;
 import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.PostRepository;
@@ -85,7 +86,7 @@ public class PostService {
         try {
             postRepository.save(post);
         } catch (Exception ex) {
-            System.out.println("Error saving post");
+            throw new ServerErrorException("Error saving post");
         }
     }
 
