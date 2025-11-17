@@ -1,6 +1,8 @@
 package ru.yandex.practicum.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.model.Post;
@@ -72,26 +74,19 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void save(Post post) throws SQLException {
-        String query = "insert into post(title, text, tags, likes_count, comments_count) values(?, ?,?, ?, ?)";
-        try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setString(1, post.getTitle());
-            preparedStatement.setString(2, post.getText());
-            preparedStatement.setString(3, post.getTags());
-            preparedStatement.setInt(4, post.getLikesCount());
-            preparedStatement.setInt(5, post.getCommentsCount());
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 1) {
-                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        long id = generatedKeys.getLong(1);
-                        post.setId(id);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        String query = "insert into post(title, text, tags, likes_count, comments_count) values(?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getText());
+            ps.setString(3, post.getTags());
+            ps.setInt(4, post.getLikesCount());
+            ps.setInt(5, post.getCommentsCount());
+        return ps;
+                    },keyHolder);
+        post.setId(keyHolder.getKey().longValue());
     }
 
     @Override
