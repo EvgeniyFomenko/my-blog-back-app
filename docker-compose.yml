@@ -1,0 +1,22 @@
+services:
+  api:
+    container_name: my_blog_api
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/blogdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+  db:
+    image: postgres
+    container_name: db
+    volumes:
+      - /var/lib/postgresql
+    ports:
+      - "5431:5431"
+    environment:
+      - POSTGRES_DB=blogdb
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    #      - TZ=Asia/Yekaterinburg
