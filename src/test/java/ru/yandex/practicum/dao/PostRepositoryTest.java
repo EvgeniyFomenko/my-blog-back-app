@@ -2,11 +2,7 @@ package ru.yandex.practicum.dao;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-import ru.yandex.practicum.configuration.DaoConfigurationTest;
-import ru.yandex.practicum.exception.NotFoundException;
+import org.springframework.boot.data.jdbc.test.autoconfigure.DataJdbcTest;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.PostRepository;
 
@@ -17,24 +13,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitWebConfig(classes = {DaoConfigurationTest.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@DataJdbcTest
 public class PostRepositoryTest {
     @Autowired
-    @Qualifier("postRepository")
     private PostRepository postRepository;
     private Post post;
 
     @BeforeEach
     public void setup() throws SQLException {
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        postRepository.save(post);
-        this.post = post;
+        Post post = Post.builder().text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
+        this.post = postRepository.save(post);
     }
 
     @AfterEach
     public void teardown() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = (List<Post>) postRepository.findAll();
         posts.forEach(post -> {
             postRepository.deleteById(post.getId());
         });
@@ -43,14 +36,14 @@ public class PostRepositoryTest {
     @Order(1)
     @Test
     void findAll(){
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = (List<Post>) postRepository.findAll();
         assertEquals(1, posts.size());
     }
 
     @Order(2)
     @Test
-    void findByText()  {
-        List<Post> posts = postRepository.findByText("text");
+    void findAllByTextLike()  {
+        List<Post> posts = postRepository.findAllByTextLike("text");
         assertEquals(1, posts.size());
 
     }
@@ -58,27 +51,23 @@ public class PostRepositoryTest {
     @Order(3)
     @Test
     void save() {
-        Post postFind = postRepository.findById(post.getId());
+        Post postFind =  postRepository.findById(post.getId()).get();
         assertEquals(post, postFind);
     }
 
     @Order(5)
     @Test
     void deleteById() throws SQLException {
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        postRepository.save(post);
-        postRepository.deleteById(1L);
-        assertThrows(NotFoundException.class, () -> postRepository.findById(1L));
+        postRepository.deleteById(post.getId());
+        assertEquals(true, postRepository.findById(post.getId()).isEmpty());
     }
 
     @Order(4)
     @Test
-    void update() throws SQLException {
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        postRepository.save(post);
+    void update() {
         post.setText("newText");
-        postRepository.update(post.getId(), post);
-        assertEquals("newText", postRepository.findById(post.getId()).getText());
+        postRepository.save(post);
+        assertEquals("newText", postRepository.findById(post.getId()).get().getText());
     }
 
 }

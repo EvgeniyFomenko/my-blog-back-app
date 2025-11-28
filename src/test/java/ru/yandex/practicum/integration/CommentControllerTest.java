@@ -1,21 +1,21 @@
 package ru.yandex.practicum.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.yandex.practicum.WebConfiguration;
 import ru.yandex.practicum.dto.CommentDto;
 import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.CommentRepository;
 import ru.yandex.practicum.repository.PostRepository;
+import tools.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,8 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitWebConfig(classes = {WebConfiguration.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@SpringBootTest
 public class CommentControllerTest {
     @Autowired
     private PostRepository postRepository;
@@ -36,7 +35,6 @@ public class CommentControllerTest {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    @Qualifier("commentRepository")
     private CommentRepository commentRepository;
 
     private Post post;
@@ -50,14 +48,14 @@ public class CommentControllerTest {
         this.post = post;
 
 
-        Comment comment = new Comment(1L, "comment", post.getId());
-        commentRepository.saveByPostId(comment, post.getId());
+        Comment comment = new Comment(null, "comment", post.getId());
+        commentRepository.save(comment);
         this.comment = commentRepository.findAllByPostId(post.getId()).get(0);
     }
 
     @AfterEach
     public void teardown() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = (List<Post>) postRepository.findAll();
         posts.forEach(post -> {
             postRepository.deleteById(post.getId());
         });
