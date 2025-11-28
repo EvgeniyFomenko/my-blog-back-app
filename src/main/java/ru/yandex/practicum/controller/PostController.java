@@ -10,7 +10,7 @@ import ru.yandex.practicum.service.PostService;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 public class PostController {
     private final PostService postService;
 

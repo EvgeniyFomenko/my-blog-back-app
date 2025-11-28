@@ -20,7 +20,7 @@ public class ImageService {
     public String uploadImage(MultipartFile file, long id) {
         String fileName = filesService.upload(file);
         imageRepository.deleteByPostId(id);
-        imageRepository.saveByPostId(new Image(null, fileName, id), id);
+        imageRepository.save(new Image(null, fileName, id));
         return fileName;
     }
 

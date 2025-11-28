@@ -54,7 +54,7 @@ public class ImageControllerTest {
 
         byte[] pngStub = new byte[]{(byte) 137, 80, 78, 71};
         MockMultipartFile file = new MockMultipartFile("image", "avatar.png", "image/png", pngStub);
-        mockMvc.perform(multipart("/posts/{id}/image", post.getId()).file(file)
+        mockMvc.perform(multipart("/api/posts/{id}/image", post.getId()).file(file)
                         .with(request -> {
                             request.setMethod("PUT");
                             return request;
@@ -67,14 +67,14 @@ public class ImageControllerTest {
     public void downloadImageTest() throws Exception {
         byte[] pngStub = new byte[]{(byte) 137, 80, 78, 71};
         MockMultipartFile file = new MockMultipartFile("image", "avatar.png", "image/png", pngStub);
-        mockMvc.perform(multipart("/posts/{id}/image", post.getId()).file(file)
+        mockMvc.perform(multipart("/api/posts/{id}/image", post.getId()).file(file)
                         .with(request -> {
                             request.setMethod("PUT");
                             return request;
                         }))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/posts/{id}/image", post.getId())).andExpect(status().isOk())
+        mockMvc.perform(get("/api/posts/{id}/image", post.getId())).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(content().bytes(pngStub));
     }

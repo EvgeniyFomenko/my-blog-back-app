@@ -56,7 +56,7 @@ public class PostControllerTest {
         Post post2 = Post.builder().text("text2").title("title2").tags("tags2").commentsCount(0).likesCount(0).build();
         post2 = postRepository.save(post2);
 
-        mockMvc.perform(get("/posts?search=&pageNumber=1&pageSize=5"))
+        mockMvc.perform(get("/api/posts?search=&pageNumber=1&pageSize=5"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.posts", hasSize(2)))
@@ -68,7 +68,7 @@ public class PostControllerTest {
     @Test
     public void getPostById() throws Exception {
 
-        mockMvc.perform(get("/posts/{id}", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}", post.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.text").value("text"))
@@ -79,7 +79,7 @@ public class PostControllerTest {
     @Order(3)
     @Test
     public void getPostLikesCount() throws Exception {
-        mockMvc.perform(post("/posts/{id}/likes", post.getId())
+        mockMvc.perform(post("/api/posts/{id}/likes", post.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(PostMapper.toDto(post))))
                 .andExpect(status().isOk())
@@ -92,7 +92,7 @@ public class PostControllerTest {
     public void getPostCommentsCount() throws Exception {
         CommentDto commentDto = new CommentDto("text", post.getId());
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(commentDto)))
                 .andExpect(status().isOk())
@@ -100,7 +100,7 @@ public class PostControllerTest {
                 .andExpect(jsonPath("$.text").value("text"))
                 .andExpect(jsonPath("$.postId").value(post.getId()));
 
-        mockMvc.perform(get("/posts/{id}", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}", post.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.text").value("text"))
@@ -115,10 +115,10 @@ public class PostControllerTest {
     @Test
     public void deletePost() throws Exception {
 
-        mockMvc.perform(delete("/posts/{id}", post.getId()))
+        mockMvc.perform(delete("/api/posts/{id}", post.getId()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/posts/{id}", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}", post.getId()))
                 .andExpect(status().isNotFound());
 
     }

@@ -24,7 +24,8 @@ public class CommentService {
     }
 
     public void save(Comment comment, Long postId) {
-        commentRepository.saveByPostId(comment, postId);
+        comment.setPostId(postId);
+        commentRepository.save(comment);
     }
 
     public void delete(Long id) {
@@ -32,7 +33,7 @@ public class CommentService {
     }
 
     public void saveAndIncrementCountPostComments(Comment comment, Long postId) {
-        commentRepository.saveByPostId(comment, postId);
+        save(comment, postId);
         incrementCommentsCountPost(postId, 1);
     }
     @Transactional

@@ -67,7 +67,7 @@ public class CommentControllerTest {
         CommentDto commentDto = new CommentDto("text", post.getId());
 //        commentController.saveComment(commentDto, 1L);
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(mapper.writeValueAsString(commentDto)))
                 .andExpect(status().isOk())
@@ -81,7 +81,7 @@ public class CommentControllerTest {
     @Test
     public void testGetComments() throws Exception {
 
-        mockMvc.perform(get("/posts/{id}/comments", post.getId()).accept(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(get("/api/posts/{id}/comments", post.getId()).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -94,7 +94,7 @@ public class CommentControllerTest {
     @Test
     public void testGetComment() throws Exception {
 
-        mockMvc.perform(get("/posts/{id}/comments/{id}", post.getId(), comment.getId()))
+        mockMvc.perform(get("/api/posts/{id}/comments/{id}", post.getId(), comment.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.text").value("comment"))
@@ -106,10 +106,10 @@ public class CommentControllerTest {
     @Test
     public void testDeleteComment() throws Exception {
 
-        mockMvc.perform(delete("/posts/{id}/comments/{id}", post.getId(), comment.getId()))
+        mockMvc.perform(delete("/api/posts/{id}/comments/{id}", post.getId(), comment.getId()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/posts/{id}/comments", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}/comments", post.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
