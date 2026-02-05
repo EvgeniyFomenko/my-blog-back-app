@@ -1,21 +1,19 @@
 package ru.yandex.practicum.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.yandex.practicum.WebConfiguration;
-import ru.yandex.practicum.controller.PostController;
 import ru.yandex.practicum.dto.CommentDto;
 import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.PostRepository;
+import tools.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,8 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitWebConfig(classes = {WebConfiguration.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@SpringBootTest
 public class PostControllerTest {
     private MockMvc mockMvc;
     @Autowired
@@ -34,21 +31,20 @@ public class PostControllerTest {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    @Qualifier("postRepository")
     private PostRepository postRepository;
     private Post post;
 
     @BeforeEach
     public void setup() throws SQLException {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
+        Post post = Post.builder().text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
         postRepository.save(post);
         this.post = post;
     }
 
     @AfterEach
     public void teardown() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = (List<Post>) postRepository.findAll();
         posts.forEach(post -> {
             postRepository.deleteById(post.getId());
         });
@@ -57,10 +53,10 @@ public class PostControllerTest {
     @Order(1)
     @Test
     public void getAllPosts() throws Exception {
-        Post post2 = Post.builder().id(1L).text("text2").title("title2").tags("tags2").commentsCount(0).likesCount(0).build();
-        postRepository.save(post2);
+        Post post2 = Post.builder().text("text2").title("title2").tags("tags2").commentsCount(0).likesCount(0).build();
+        post2 = postRepository.save(post2);
 
-        mockMvc.perform(get("/posts?search=&pageNumber=1&pageSize=5"))
+        mockMvc.perform(get("/api/posts?search=&pageNumber=1&pageSize=5"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.posts", hasSize(2)))
@@ -72,7 +68,7 @@ public class PostControllerTest {
     @Test
     public void getPostById() throws Exception {
 
-        mockMvc.perform(get("/posts/{id}", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}", post.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.text").value("text"))
@@ -83,7 +79,7 @@ public class PostControllerTest {
     @Order(3)
     @Test
     public void getPostLikesCount() throws Exception {
-        mockMvc.perform(post("/posts/{id}/likes", post.getId())
+        mockMvc.perform(post("/api/posts/{id}/likes", post.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(PostMapper.toDto(post))))
                 .andExpect(status().isOk())
@@ -96,7 +92,7 @@ public class PostControllerTest {
     public void getPostCommentsCount() throws Exception {
         CommentDto commentDto = new CommentDto("text", post.getId());
 
-        mockMvc.perform(post("/posts/{id}/comments", post.getId())
+        mockMvc.perform(post("/api/posts/{id}/comments", post.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(commentDto)))
                 .andExpect(status().isOk())
@@ -104,7 +100,7 @@ public class PostControllerTest {
                 .andExpect(jsonPath("$.text").value("text"))
                 .andExpect(jsonPath("$.postId").value(post.getId()));
 
-        mockMvc.perform(get("/posts/{id}", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}", post.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.text").value("text"))
@@ -119,10 +115,10 @@ public class PostControllerTest {
     @Test
     public void deletePost() throws Exception {
 
-        mockMvc.perform(delete("/posts/{id}", post.getId()))
+        mockMvc.perform(delete("/api/posts/{id}", post.getId()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/posts/{id}", post.getId()))
+        mockMvc.perform(get("/api/posts/{id}", post.getId()))
                 .andExpect(status().isNotFound());
 
     }

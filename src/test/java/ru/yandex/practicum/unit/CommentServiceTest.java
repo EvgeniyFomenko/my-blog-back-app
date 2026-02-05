@@ -5,32 +5,30 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-import ru.yandex.practicum.configuration.ServiceConfigurationTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.CommentRepository;
 import ru.yandex.practicum.repository.PostRepository;
 import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.service.PostService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.reset;
 
-@ActiveProfiles("test")
-@SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class})
+@SpringBootTest(classes = {PostService.class, CommentService.class, PostRepository.class, CommentRepository.class})
 class CommentServiceTest {
     @Autowired
-    @Qualifier("mockCommentService")
     private CommentService commentService;
-
-    @Autowired
-    @Qualifier("mockCommentRepository")
+    @MockitoBean
     private CommentRepository commentRepository;
-    @Autowired
-    @Qualifier("mockPostRepository")
+    @MockitoBean
     private PostRepository postRepository;
 
     @BeforeEach
@@ -56,8 +54,8 @@ class CommentServiceTest {
 
     @Test
     void save() {
-        Comment comment = new Comment(1L, "comment", 1L);
-        Mockito.doNothing().when(commentRepository).saveByPostId(comment, 1L);
+        Comment comment = new Comment(null, "comment", 1L);
+        Mockito.doReturn(comment).when(commentRepository).save(comment);
         commentService.save(comment, 1L);
     }
 
@@ -70,22 +68,22 @@ class CommentServiceTest {
 
     @Test
     void saveAndIncrementCountPostComments() {
-        Comment comment = new Comment(1L, "comment", 1L);
-        Post post = new Post(1L, "post", "text", null, 0, 1);
-        Mockito.doReturn(post).when(postRepository).findById(1L);
-        Mockito.doNothing().when(commentRepository).saveByPostId(comment, 1L);
+        Comment comment = new Comment(null, "comment", 1L);
+        Post post = new Post(null, "post", "text", null, 0, 1);
+        Mockito.doReturn(Optional.of(post)).when(postRepository).findById(1L);
+        Mockito.doReturn(comment).when(commentRepository).save(comment);
         commentService.saveAndIncrementCountPostComments(comment, 1L);
-        Mockito.verify(commentRepository, Mockito.times(1)).saveByPostId(comment, 1L);
+        Mockito.verify(commentRepository, Mockito.times(1)).save(comment);
         Mockito.verify(postRepository, Mockito.times(1)).findById(1L);
     }
 
     @Test
     void deleteAndDecrementCountPostComments() {
-        Post post = new Post(1L, "post", "text", null, 0, 1);
-        Mockito.doReturn(post).when(postRepository).findById(1L);
+        Post post = new Post(null, "post", "text", null, 0, 1);
+        Mockito.doReturn(Optional.of(post)).when(postRepository).findById(1L);
         Mockito.doNothing().when(commentRepository).deleteById(1L);
         commentService.deleteAndDecrementCountPostComments(1L, 1L);
-        Mockito.verify(postRepository, Mockito.times(2)).findById(1L);
+        Mockito.verify(postRepository, Mockito.times(1)).findById(1L);
         Mockito.verify(commentRepository, Mockito.times(1)).deleteById(1L);
     }
 }

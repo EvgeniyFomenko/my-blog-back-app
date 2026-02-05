@@ -4,10 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-import ru.yandex.practicum.configuration.ServiceConfigurationTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 import ru.yandex.practicum.dto.PostDto;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.CommentRepository;
@@ -17,21 +16,18 @@ import ru.yandex.practicum.service.PostService;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.reset;
 
-@ActiveProfiles("test")
-@SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class})
+@SpringBootTest(classes = {PostService.class, PostRepository.class, CommentRepository.class})
 class PostServiceTest {
-    @Autowired
-    @Qualifier("mockCommentRepository")
+    @MockitoBean
     private CommentRepository commentRepository;
-    @Autowired
-    @Qualifier("mockPostRepository")
+    @MockitoBean
     private PostRepository postRepository;
     @Autowired
-    @Qualifier("mockPostService")
     private PostService postService;
 
     @BeforeEach
@@ -51,7 +47,7 @@ class PostServiceTest {
     @Test
     void findByText() {
         Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        Mockito.doReturn(Collections.singletonList(post)).when(postRepository).findByText(post.getText());
+        Mockito.doReturn(Collections.singletonList(post)).when(postRepository).findAllByTextLike(post.getText());
         ru.yandex.practicum.dto.PostResponseDto postResponseDto = postService.findByText("text", 1, 1);
         List<PostDto> posts = postResponseDto.getPosts();
         assertEquals(1, posts.size());
@@ -60,8 +56,8 @@ class PostServiceTest {
 
     @Test
     void save() throws SQLException {
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        Mockito.doNothing().when(postRepository).save(post);
+        Post post = Post.builder().text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
+        Mockito.doReturn(post).when(postRepository).save(post);
         postService.save(post);
         Mockito.verify(postRepository, Mockito.times(1)).save(post);
 
@@ -76,16 +72,16 @@ class PostServiceTest {
 
     @Test
     void update() {
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        Mockito.doNothing().when(postRepository).update(1L, post);
+        Post post = Post.builder().text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
+        Mockito.doReturn(post).when(postRepository).save(post);
         postService.update(1L, post);
-        Mockito.verify(postRepository, Mockito.times(1)).update(1L, post);
+        Mockito.verify(postRepository, Mockito.times(1)).save(post);
     }
 
     @Test
     void finById() {
-        Post post = Post.builder().id(1L).text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
-        Mockito.doReturn(post).when(postRepository).findById(1L);
+        Post post = Post.builder().text("text").title("title").tags("tags").commentsCount(0).likesCount(0).build();
+        Mockito.doReturn(Optional.of(post)).when(postRepository).findById(1L);
         Post post1 = postService.finById(1L);
         assertEquals(post, post1);
     }

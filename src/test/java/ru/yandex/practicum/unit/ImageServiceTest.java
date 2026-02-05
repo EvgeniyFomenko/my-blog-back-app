@@ -4,17 +4,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yandex.practicum.configuration.ServiceConfigurationTest;
+
 import ru.yandex.practicum.model.Image;
+import ru.yandex.practicum.repository.CommentRepository;
 import ru.yandex.practicum.repository.ImageRepository;
+import ru.yandex.practicum.repository.PostRepository;
+import ru.yandex.practicum.service.CommentService;
 import ru.yandex.practicum.service.FilesService;
 import ru.yandex.practicum.service.ImageService;
+import ru.yandex.practicum.service.PostService;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,29 +28,26 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ActiveProfiles("test")
-@SpringJUnitWebConfig(classes = {ServiceConfigurationTest.class})
+@SpringBootTest(classes = {ImageRepository.class, FilesService.class, ImageService.class})
 class ImageServiceTest {
-    @Autowired
-    @Qualifier("mockImageRepository")
+    @MockitoBean
     ImageRepository mockImageRepository;
-    @Autowired
+    @MockitoBean
     FilesService filesServiceImpl;
     @Autowired
-    @Qualifier("mockImageService")
     ImageService imageService;
 
     @Test
     void upload() {
-        Image image = new Image(1L, "file", 1L);
+        Image image = new Image(null, "file", 1L);
         Image bySaved = new Image(null, "file", 1L);
         MultipartFile multipartFile = new MockMultipartFile("file", "file".getBytes());
         String file = "file";
         Mockito.doReturn(file).when(filesServiceImpl).upload(multipartFile);
-        Mockito.doNothing().when(mockImageRepository).saveByPostId(image, 1L);
+        Mockito.doReturn(image).when(mockImageRepository).save(image);
         Mockito.doNothing().when(mockImageRepository).deleteByPostId(1L);
         String fileReturn = imageService.uploadImage(multipartFile, 1L);
-        Mockito.verify(mockImageRepository, Mockito.atLeastOnce()).saveByPostId(bySaved, 1L);
+        Mockito.verify(mockImageRepository, Mockito.atLeastOnce()).save(bySaved);
         Mockito.verify(mockImageRepository, Mockito.atLeastOnce()).deleteByPostId(1L);
         assertEquals(file, fileReturn);
     }

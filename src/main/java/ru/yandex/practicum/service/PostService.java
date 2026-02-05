@@ -2,12 +2,14 @@ package ru.yandex.practicum.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dto.PostResponseDto;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ServerErrorException;
 import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.model.Post;
 import ru.yandex.practicum.repository.PostRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PostService {
@@ -19,11 +21,16 @@ public class PostService {
     }
 
     public List<Post> findAll() {
-        return postRepository.findAll();
+        return (List<Post>) postRepository.findAll();
     }
 
     public PostResponseDto findByText(String text, int pageSize, int pageNumber) {
-        List<Post> posts = postRepository.findByText(text);
+        List<Post> posts;
+        if (Objects.isNull(text) || text.isBlank()) {
+          posts = findAll();
+        } else {
+            posts =  postRepository.findAllByTextLike(text);
+        }
         int pages = getPages(pageSize, posts.size());
         posts = getSubList(pageSize, pageNumber, pages, posts);
         PostResponseDto postResponseDto = PostMapper.toResponseDto(posts);
@@ -95,10 +102,11 @@ public class PostService {
     }
 
     public void update(Long id, Post post) {
-        postRepository.update(id, post);
+        post.setId(id);
+        postRepository.save(post);
     }
 
     public Post finById(Long id) {
-        return postRepository.findById(id);
+        return postRepository.findById(id).orElseThrow(()->new NotFoundException("Post с id " +id+ " ненайден"));
     }
 }

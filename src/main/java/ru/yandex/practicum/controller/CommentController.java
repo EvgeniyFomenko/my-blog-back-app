@@ -8,21 +8,28 @@ import ru.yandex.practicum.service.CommentService;
 import ru.yandex.practicum.service.PostService;
 
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{id}/comments")
-    public List<Comment> getComments(@PathVariable("id") Long id) {
-        return commentService.findAllByPostId(id);
+    public List<Comment> getComments(@PathVariable("id") String id) {
+        if (Objects.isNull(id) || !Character.isDigit(id.charAt(0))) {
+            return List.of();
+        }
+        return commentService.findAllByPostId(Long.parseLong(id));
     }
 
     @GetMapping("/{id}/comments/{idComment}")
-    public Comment getComment(@PathVariable("id") Long id, @PathVariable("idComment") Long idComment) {
-        return commentService.findCommentByIdAndPostId(idComment, id);
+    public Comment getComment(@PathVariable("id") String id, @PathVariable("idComment") Long idComment) {
+        if (Objects.isNull(id) || !Character.isDigit(id.charAt(0))) {
+            return null;
+        }
+        return commentService.findCommentByIdAndPostId(idComment, Long.parseLong(id));
     }
 
     @PostMapping("/{id}/comments")

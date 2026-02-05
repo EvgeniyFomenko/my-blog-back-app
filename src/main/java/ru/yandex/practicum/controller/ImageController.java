@@ -10,7 +10,7 @@ import ru.yandex.practicum.service.ImageService;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 public class ImageController {
 
     private final ImageService imageService;

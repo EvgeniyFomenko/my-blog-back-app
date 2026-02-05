@@ -1,5 +1,5 @@
 -- Таблица с постами
-create table if not exists post
+create table if not exists "POST"
 (
     id             bigserial primary key,
     title          varchar(256) not null,
@@ -9,14 +9,14 @@ create table if not exists post
     tags           varchar(256)
 );
 -- Таблица с комментами
-create table if not exists comment
+create table if not exists "COMMENT"
 (
     id      bigserial primary key,
     text    varchar(256) not null,
     post_id integer      not null
 );
 -- Таблица с файлами
-create table if not exists image
+create table if not exists "IMAGE"
 (
     id      bigserial primary key,
     name    varchar(256) not null,

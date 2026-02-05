@@ -1,20 +1,15 @@
 package ru.yandex.practicum.repository;
 
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.model.Post;
 
-import java.sql.SQLException;
 import java.util.List;
 
-public interface PostRepository {
-    List<Post> findAll();
+@Repository
+public interface PostRepository extends CrudRepository<Post, Long> {
 
-    List<Post> findByText(String text);
-
-    void save(Post post) throws SQLException;
+    List<Post> findAllByTextLike(String text);
 
     void deleteById(Long id);
-
-    void update(Long id, Post post);
-
-    Post findById(Long id);
 }
